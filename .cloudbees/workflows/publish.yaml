@@ -27,7 +27,7 @@ jobs:
         uses: docker://golang:1.20.3-alpine3.17
         shell: sh
         run: |
-          apt-get update && apt-get install -y curl jq
+          apk update && apk add --no-cache curl jq
           echo '{"user": "thanan", "password": "pwd", "id": 2345, "token": "token"}' | jq '.id'
 
 

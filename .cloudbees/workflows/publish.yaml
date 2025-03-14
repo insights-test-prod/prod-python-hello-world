@@ -23,7 +23,7 @@ jobs:
           destination: index.docker.io/cbpautomation/python-hello-world-docker:${{cloudbees.version}}
           labels: app=cbp
 
-      - name: Say hello
+      - name: Assert cloudbees versions with uploaded registry versions
         uses: docker://golang:1.20.3-alpine3.17
         shell: sh
         run: |
@@ -32,7 +32,7 @@ jobs:
           TOKEN=`curl -s -H "Content-Type: application/json" -X POST -H "Content-Type: application/json" \
           -d '{"username":"cbpautomation", "password":"${{ secrets.DOCKER_PASSWORD }}"}' "https://hub.docker.com/v2/users/login/" | jq -r .token`
           echo "Login successfull"
-          VERSION=`curl "https://hub.docker.com/v2/repositories/cbpautomation/python-hello-world-docker/tags" -X GET -H "Authorization: JWT ${TOKEN}" | jq '.results[0].name'`
+          VERSION=`curl "https://hub.docker.com/v2/repositories/cbpautomation/python-hello-world-docker/tags" -X GET -H "Authorization: JWT ${TOKEN}" | jq '.results[0].name' | tr -d '"'`
 
           echo $VERSION
           [ "${{cloudbees.version}}" != "$VERSION" ] && echo "Versions are not equal" && exit 1

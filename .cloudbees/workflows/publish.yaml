@@ -35,7 +35,8 @@ jobs:
           VERSION=`curl "https://hub.docker.com/v2/repositories/cbpautomation/python-hello-world-docker/tags" -X GET -H "Authorization: JWT ${TOKEN}" | jq '.results[0].name' | tr -d '"'`
 
           echo $VERSION
-          [ "${{cloudbees.version}}" != "$VERSION" ] && echo "Versions are not equal" && exit 1
+          set CB=${{cloudbees.version}}
+          [ "$CB" != "$VERSION" ] && echo "Versions are not equal" && exit 1
 
 
 

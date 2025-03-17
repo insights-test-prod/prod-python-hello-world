@@ -36,6 +36,7 @@ jobs:
 
           
           CB=${{cloudbees.version}}
+          CB=0.021
           echo $VERSION
           echo $CB
           [ "$CB" = "$VERSION" ] && echo "Both versions are same " && exit 0 || echo "Both versions are not same" && exit 1

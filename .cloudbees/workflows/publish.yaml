@@ -33,12 +33,8 @@ jobs:
           -d '{"username":"cbpautomation", "password":"${{ secrets.DOCKER_PASSWORD }}"}' "https://hub.docker.com/v2/users/login/" | jq -r .token`
           echo "Login successfull"
           VERSION=`curl "https://hub.docker.com/v2/repositories/cbpautomation/python-hello-world-docker/tags" -X GET -H "Authorization: JWT ${TOKEN}" | jq '.results[0].name' | tr -d '"'`
-
           
           CB=${{cloudbees.version}}
-          CB=0.021
-          echo $VERSION
-          echo $CB
           [ "$CB" = "$VERSION" ] && echo "Both versions are same " && exit 0 || echo "Both versions are not same" && exit 1
 
 

@@ -36,8 +36,7 @@ jobs:
           
           CB=${{cloudbees.version}}
           echo $VERSION
-          [ "$CB" = "$VERSION" ] && echo "Both versions are same " && exit 0 || echo "Both versions are not same" && exit 1
-
+          
           echo "Delete the version"
           curl -X DELETE \
             -H "Authorization: JWT ${TOKEN}" \

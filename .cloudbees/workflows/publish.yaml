@@ -30,18 +30,19 @@ jobs:
           echo "${{cloudbees.version}}"
           apk update && apk add --no-cache curl jq
           TOKEN=`curl -s -H "Content-Type: application/json" -X POST -H "Content-Type: application/json" \
-          -d '{"username":"cbpautomation", "password":"${{ secrets.DOCKER_PASSWORD }}' "https://hub.docker.com/v2/users/login/" | jq -r .token`
+          -d '{"username":"cbpautomation", "password":"${{ secrets.DOCKER_PASSWORD }}"}' "https://hub.docker.com/v2/users/login/" | jq -r .token`
           echo "Login successfull"
-          
           VERSION=`curl "https://hub.docker.com/v2/repositories/cbpautomation/python-hello-world-docker/tags" -X GET -H "Authorization: JWT ${TOKEN}" | jq '.results[0].name' | tr -d '"'`
           
           CB=${{cloudbees.version}}
-          echo `Uploaded ${VERSION}`
+          echo $VERSION
+          [ "$CB" = "$VERSION" ] && echo "Both versions are same " && exit 0 || echo "Both versions are not same" && exit 1
 
           echo "Delete the version"
           curl -X DELETE \
             -H "Authorization: JWT ${TOKEN}" \
                https://hub.docker.com/v2/repositories/cbpautomation/python-hello-world-docker/tags/${{cloudbees.version}}/
+               
           [ "$CB" = "$VERSION" ] && echo "Both versions are same " && exit 0 || echo "Both versions are not same" && exit 1
          
 

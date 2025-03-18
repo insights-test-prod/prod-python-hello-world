@@ -36,12 +36,15 @@ jobs:
           VERSION=`curl "https://hub.docker.com/v2/repositories/cbpautomation/python-hello-world-docker/tags" -X GET -H "Authorization: JWT ${TOKEN}" | jq '.results[0].name' | tr -d '"'`
           
           CB=${{cloudbees.version}}
-          [ "$CB" = "$VERSION" ] && echo "Both versions are same " && exit 0 || echo "Both versions are not same" && exit 1
-          
+          echo 'Uploaded $VERSION'
+
           echo "Delete the version"
           curl -X DELETE \
               -H "Authorization: JWT ${TOKEN}" \
               https://hub.docker.com/v2/repositories/cbpautomation/python-hello-world-docker/tags/${{cloudbees.version}}/
+
+          [ "$CB" = "$VERSION" ] && echo "Both versions are same " && exit 0 || echo "Both versions are not same" && exit 1
+         
 
 
 

@@ -5,8 +5,6 @@ on:
   workflow_dispatch:
 jobs:
   deploy:
-    env:
-      TOKEN: ${{ secrets.DOCKER_PASSWORD }}
     steps:
       - uses: cloudbees-io/checkout@v1
         name: checkout
@@ -39,12 +37,9 @@ jobs:
           
           CB=${{cloudbees.version}}
           [ "$CB" = "$VERSION" ] && echo "Both versions are same " && exit 0 || echo "Both versions are not same" && exit 1
-      - name: Assert cloudbees versions with uploaded registry versions
-        uses: docker://golang:1.20.3-alpine3.17
-        if: always()
-        shell: sh
-        run: |
-            curl -X DELETE \
+          
+          echo "Delete the version"
+          curl -X DELETE \
               -H "Authorization: JWT ${TOKEN}" \
               https://hub.docker.com/v2/repositories/cbpautomation/python-hello-world-docker/tags/${{cloudbees.version}}/
 

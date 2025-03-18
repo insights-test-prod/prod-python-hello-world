@@ -29,10 +29,10 @@ jobs:
         run: |
           echo "${{cloudbees.version}}"
           apk update && apk add --no-cache curl jq
-          token=`curl -s -H "Content-Type: application/json" -X POST -H "Content-Type: application/json" \
+          TOKEN=`curl -s -H "Content-Type: application/json" -X POST -H "Content-Type: application/json" \
           -d '{"username":"cbpautomation", "password":"${TOKEN}"}' "https://hub.docker.com/v2/users/login/" | jq -r .token`
           echo "Login successfull"
-          TOKEN=$token
+          
           VERSION=`curl "https://hub.docker.com/v2/repositories/cbpautomation/python-hello-world-docker/tags" -X GET -H "Authorization: JWT ${TOKEN}" | jq '.results[0].name' | tr -d '"'`
           
           CB=${{cloudbees.version}}

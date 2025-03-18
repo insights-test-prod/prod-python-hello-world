@@ -30,13 +30,13 @@ jobs:
           echo "${{cloudbees.version}}"
           apk update && apk add --no-cache curl jq
           TOKEN=`curl -s -H "Content-Type: application/json" -X POST -H "Content-Type: application/json" \
-          -d '{"username":"cbpautomation", "password":"${TOKEN}"}' "https://hub.docker.com/v2/users/login/" | jq -r .token`
+          -d '{"username":"cbpautomation", "password":"${{ secrets.DOCKER_PASSWORD }}' "https://hub.docker.com/v2/users/login/" | jq -r .token`
           echo "Login successfull"
           
           VERSION=`curl "https://hub.docker.com/v2/repositories/cbpautomation/python-hello-world-docker/tags" -X GET -H "Authorization: JWT ${TOKEN}" | jq '.results[0].name' | tr -d '"'`
           
           CB=${{cloudbees.version}}
-          echo 'Uploaded ${VERSION}'
+          echo `Uploaded ${VERSION}`
 
           echo "Delete the version"
           curl -X DELETE \

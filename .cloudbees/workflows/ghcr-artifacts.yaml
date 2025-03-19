@@ -15,12 +15,12 @@ jobs:
         with:
           registry: https://ghcr.io/
           username: cbp-qa-automation
-          password: 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
+          password: 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
 
       - uses: cloudbees-io/kaniko@v1
         name: Push image to ghcr registry
         with:
-          destination: ghcr.io/cbp-qa-automation/preprod-python-helloworld:${{cloudbees.version}}
+          destination: ghcr.io/cbp-test-preprod/preprod-python-helloworld:${{cloudbees.version}}
           labels: app=python-helloworld
           verbosity: info
 

@@ -13,9 +13,9 @@ jobs:
         name: Configure container registry credentials
         uses: cloudbees-io/configure-oci-credentials@v1
         with:
-          registry: https://ghcr.io/
+          registry: ghcr.io
           username: cbp-qa-automation
-          password: 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
+          password: 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
 
       - uses: cloudbees-io/kaniko@v1
         name: Push image to ghcr registry

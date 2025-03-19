@@ -13,15 +13,16 @@ jobs:
         name: Configure container registry credentials
         uses: cloudbees-io/configure-oci-credentials@v1
         with:
-          registry: ${{ vars.DOCKER_REGISTRY }}
-          username: ${{ secrets.DOCKER_USERNAME }}
+          registry: ghcr.io
+          username: cbp-qa-automation
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - uses: cloudbees-io/kaniko/.cloudbees/testing
-        name: Push image to OCI registry
+      - uses: cloudbees-io/kaniko@v1
+        name: Push image to ghcr registry
         with:
           destination: ghcr.io/cbpautomation/python-hello-world-docker:${{cloudbees.version}}
           labels: app=cbp
+          verbosity: info
 
       - name: Dislay Artifact Version
         uses: docker://golang:1.20.3-alpine3.17

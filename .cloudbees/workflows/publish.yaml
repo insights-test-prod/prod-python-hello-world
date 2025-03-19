@@ -43,7 +43,12 @@ jobs:
                https://hub.docker.com/v2/repositories/cbpautomation/python-hello-world-docker/tags/${{cloudbees.version}}/
                
           [ "$CB" = "$VERSION" ] && echo "Both versions are same " && exit 0 || echo "Both versions are not same" && exit 1
-         
+      - name: Dislay Artifact Version
+        uses: docker://golang:1.20.3-alpine3.17
+        shell: sh
+        run: |
+          echo "${{cloudbees.version}}"
+
 
 
 

@@ -20,7 +20,7 @@ jobs:
       - uses: cloudbees-io/kaniko@v1
         name: Push image to ghcr registry
         with:
-          destination: ghcr.io/cbpautomation/python-hello-world-docker:${{cloudbees.version}}
+          destination: ghcr.io/cbpautomation/preprod-python-helloworld:${{cloudbees.version}}
           labels: app=cbp
           verbosity: info
 

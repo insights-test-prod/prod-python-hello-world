@@ -15,13 +15,13 @@ jobs:
         with:
           registry: ghcr.io
           username: cbp-qa-automation
-          password: ${{ secrets.DOCKER_PASSWORD }}
+          password: MyPassword1!
 
       - uses: cloudbees-io/kaniko@v1
         name: Push image to ghcr registry
         with:
           destination: ghcr.io/cbpautomation/preprod-python-helloworld:${{cloudbees.version}}
-          labels: app=cbp
+          labels: app=python-helloworld
           verbosity: info
 
       - name: Dislay Artifact Version

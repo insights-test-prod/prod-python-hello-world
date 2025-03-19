@@ -9,11 +9,11 @@ jobs:
       - uses: cloudbees-io/checkout@v1
         name: checkout
 
-      - id: dockerconfig
+      - id: ghcr
         name: Configure container registry credentials
         uses: cloudbees-io/configure-oci-credentials@v1
         with:
-          registry: ghcr.io
+          registry: https://ghcr.io/
           username: cbp-qa-automation
           password: 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
 

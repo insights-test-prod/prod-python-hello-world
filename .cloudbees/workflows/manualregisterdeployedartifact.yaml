@@ -12,8 +12,8 @@ jobs:
       - name: success_valid_env_reg_artifact
         uses: cloudbees-io/register-deployed-artifact@v1
         with:
-          name: "preprod-python-hello-world"
-          version: "3.0.0"
+          name: "cbpautomation/python-hello-world-docker"
+          version: "0.0.383"
           url: "docker.io/cbpautomation/python-hello-world-docker:0.0.383"
           digest: "sha256:102f6f3d863fcd801815e527be029cb191059416616f3581b55e20585f4a7dec"
           target-environment: "Test_env"

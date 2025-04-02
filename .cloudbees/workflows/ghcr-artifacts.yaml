@@ -15,7 +15,7 @@ jobs:
         with:
           registry: ghcr.io
           username: cbp-qa-automation
-          password: ${{ secrets.CBP_GIT_PREPROD }}
+          password: ${{ secrets.CBP_GIT_PAT }}
 
       - uses: cloudbees-io/kaniko@v1
         name: Push image to ghcr registry

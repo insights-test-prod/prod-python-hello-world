@@ -20,8 +20,8 @@ jobs:
       - uses: cloudbees-io/kaniko@v1
         name: Push image to ghcr registry
         with:
-          destination: ghcr.io/cbp-test-preprod/preprod-python-helloworld:${{cloudbees.version}}
-          labels: app=preprod-python-helloworld
+          destination: ghcr.io/cbp-test-prod/prod-python-helloworld:${{cloudbees.version}}
+          labels: app=prod-python-helloworld
           verbosity: debug
 
       - name: Dislay Artifact Version

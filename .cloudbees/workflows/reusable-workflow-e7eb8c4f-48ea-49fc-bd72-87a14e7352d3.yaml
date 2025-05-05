@@ -1,0 +1,9 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: Foo Workflow
+on:
+  workflow_dispatch:
+jobs:
+  call_bar_workflow:
+    uses: cbp-test-prod/prod-python-helloworld/.cloudbees/workflows/callable-workflow-d200b850-01ce-4c58-946b-d32a48181529.yaml
+    

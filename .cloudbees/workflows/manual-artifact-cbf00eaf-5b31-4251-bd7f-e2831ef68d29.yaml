@@ -1,0 +1,25 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: RegisterDeployedArtifact
+on:
+  workflow_dispatch:
+jobs:
+  env_reg_artifacts:
+    steps:
+      - name: Inform system that an artifact version was created
+        uses: cloudbees-io/register-build-artifact@v1
+        with:
+          name: "cbpautomation/python-hello-world-docker"
+          version: "05.23.29"
+          url: "docker.io/cbpautomation/python-hello-world-docker:05.23.29"
+          digest: "sha256:4499730fd9937fbccdf7d8e1d27ba704bb9ac52a3e634e1cd2be89282146a113"
+          
+      - name: success_valid_env_reg_artifact
+        uses: cloudbees-io/register-deployed-artifact@v1
+        with:
+          name: "cbpautomation/python-hello-world-docker"
+          version: "05.23.29"
+          digest: "sha256:4499730fd9937fbccdf7d8e1d27ba704bb9ac52a3e634e1cd2be89282146a113"
+          url: "docker.io/cbpautomation/python-hello-world-docker:05.23.29"
+          target-environment: "PROD"
+

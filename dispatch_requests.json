@@ -1,0 +1,16 @@
+[
+  {
+    "component_id": "1cc1233a-3fd0-4e50-a51a-c624b21f8102",
+    "branch_name": "workflow-branch-1",
+    "workflow_file_name": "workflow-1.yaml",
+    "inputs": {
+      "testkey1": "value",
+      "testkey2": "50"
+    }
+  },
+  {
+    "component_id": "1cc1233a-3fd0-4e50-a51a-c624b21f8102",
+    "branch_name": "workflow-branch-2",
+    "workflow_file_name": "workflow-2.yaml"
+  }
+]

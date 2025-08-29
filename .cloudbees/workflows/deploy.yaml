@@ -19,7 +19,5 @@ jobs:
         if: ${{ fromJSON(inputs.manifest)['cbpautomation/python-hello-world-docker'].deploy }}
         uses: cloudbees-io/register-deployed-artifact@v1
         with:
-          name: "cbpautomation/python-hello-world-docker"
-          version: "${{ fromJSON(inputs.manifest)['cbpautomation/python-hello-world-docker'].version }}"
-          url: "${{ fromJSON(inputs.manifest)['cbpautomation/python-hello-world-docker'].url }}"
+          artifact-id: "${{ fromJSON(inputs.manifest)['cbpautomation/python-hello-world-docker'].id }}"
           target-environment: "${{ inputs.environment }}"

@@ -1,36 +1,23 @@
 apiVersion: automation.cloudbees.io/v1alpha1
 kind: workflow
-name: My automation
+name: RegisterDeployedArtifact
 on:
   workflow_dispatch:
 jobs:
-  deploy:
+  env_reg_artifacts:
     steps:
-      - uses: cloudbees-io/checkout@v1
-        name: checkout
-
-      - id: ghcr
-        name: Configure container registry credentials
-        uses: cloudbees-io/configure-oci-credentials@v1
+      - name: Inform system that an artifact version was created
+        uses: cloudbees-io/register-build-artifact@v1
+        id: register
         with:
-          registry: ghcr.io
-          username: cbp-qa-automation
-          password: ${{ secrets.CBP_GIT_PAT }}
-
-      - uses: cloudbees-io/kaniko@v1
-        name: Push image to ghcr registry
+          name: "cbpautomation/python-hello-world-docker"
+          version: "02.05.03"
+          url: "docker.io/cbpautomation/python-hello-world-docker:02.05.04"
+          digest: "sha256:1ee98ef82d24e34467ef5bdecd4bd807bd6fe28511b1f00c3e2f0b00123c8cc4"
+          
+      - name: success_valid_env_reg_artifact
+        uses: cloudbees-io/register-deployed-artifact@v2
         with:
-          destination: ghcr.io/cbp-test-prod/prod-python-hello-world:${{cloudbees.version}}
-          labels: app=preprod-python-helloworld
-         
-
-      - name: Display Artifact Version
-        uses: docker://golang:1.20.3-alpine3.17
-        shell: sh
-        run: |
-          echo "CB_VERSION: ${{cloudbees.version}}"
-      - name: Publish workflow evidence item
-        uses: cloudbees-io/publish-evidence-item@v1
-        with:
-          content: |-
-            CB_VERSION: ${{cloudbees.version}}
+          labels: allPassed, deployed
+          target-environment: "PROD"
+          artifact-id: ${{ steps.register.outputs.artifact-id }}

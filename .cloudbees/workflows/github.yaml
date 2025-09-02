@@ -4,42 +4,71 @@ name: My workflow
 on:
   workflow_dispatch:
 jobs:
-  build:
+
+  github:
     steps:
-      - name: Say hello
+      - name: Checkout1
+        uses: cloudbees-io/checkout@v1
+        id: checkout1
+        env:
+          RUNNER_DEBUG: "1"
+      - name: Commit1
         uses: docker://golang:1.20.3-alpine3.17
         shell: sh
         run: |
-          echo "hello world"
-    needs:
-      - approval-job
-  approval-job:
-    delegates: cloudbees-io/manual-approval/custom-job.yml@v1
-    with:
-      approvers: ff67605a-b3ca-11ef-9745-42010a83ae7d
-      disallowLaunchByUser: false
-      instructions: some
-      approvalInputs: |
-        in1:
-          type: string
-          required: true
-          description: One of the required approver inputs
-        in2:
-          type: number
-          description: a numeric input
-        in3:
-          type: choice
-          options:
-            - op1
-            - op2
-  echo-approval-inputs:
+          echo "Commit 1:"
+          echo Repository URL = ${{ steps.checkout1.outputs.repository-url }}
+          echo Commit ID = ${{ steps.checkout1.outputs.commit }}
+          echo Commit URL = ${{ steps.checkout1.outputs.commit-url }}
+          echo Ref = ${{ steps.checkout1.outputs.ref }}
+          if [ "${{ steps.checkout1.outputs.ref }}" = "refs/heads/main" ]; then echo "HEAD is same"; else echo "Main is not fetched correctly"; exit 0; fi
+  github-anotherrepo:
     steps:
-      - uses: docker://golang:1.20.3-alpine3.17
-        name: Echo approver inputs
+      - name: Checkout2
+        uses: cloudbees-io/checkout@v1
+        id: checkout2
+        with:
+          provider: github
+          repository: cbp-test-prod/prod-momento-go-sample
+          ref: v1.0.0
+        env:
+          RUNNER_DEBUG: "1"
+      - name: Commit2
+        uses: docker://golang:1.20.3-alpine3.17
         shell: sh
         run: |
-          echo comments: ${{needs.approval-job.outputs.comments }}
-          echo in1 input: ${{ fromJSON(needs.approval-job.outputs.approvalInputValues).in1 }}
-          echo in2 input: ${{ fromJSON(needs.approval-job.outputs.approvalInputValues).in2 }}
-    needs:
-      - approval-job
+          echo "Commit 2:"
+          echo "Inputs:"
+          echo "  provider: github"
+          echo "  repository: cbp-test-prod/prod-momento-go-sample"
+          echo "  ref v1.0.0"
+          echo Repository URL = ${{ steps.checkout2.outputs.repository-url }}
+          echo Commit ID = ${{ steps.checkout2.outputs.commit }}
+          echo Commit URL = ${{ steps.checkout2.outputs.commit-url }}
+          echo Ref = ${{ steps.checkout2.outputs.ref }}
+          if [ "${{ steps.checkout2.outputs.ref }}" = "v1.0.0" ]; then echo "Ref variables match, continue..."; else echo "Ref references do not match, exiting."; exit 0; fi
+  github-anotherrepo-ref:
+    steps:
+      - name: Checkout3
+        uses: cloudbees-io/checkout@v1
+        id: checkout3
+        with:
+          provider: github
+          repository: cbp-test-prod/prod-python-hello-world
+          ref: bfe78441b62f14786bee84c9e6ac81c759143b5c
+        env:
+          RUNNER_DEBUG: "1"
+      - name: Commit3
+        uses: docker://golang:1.20.3-alpine3.17
+        shell: sh
+        run: |
+          echo "Commit 3:"
+          echo "Inputs:"
+          echo "  provider: github"
+          echo "  repository: cbp-test-prod/prod-python-hello-world"
+          echo "  ref bfe78441b62f14786bee84c9e6ac81c759143b5c"
+          echo Repository URL = ${{ steps.checkout3.outputs.repository-url }}
+          echo Commit ID = ${{ steps.checkout3.outputs.commit }}
+          echo Commit URL = ${{ steps.checkout3.outputs.commit-url }}
+          echo Ref = ${{ steps.checkout3.outputs.ref }}
+          if [ "${{ steps.checkout3.outputs.commit }}" = "bfe78441b62f14786bee84c9e6ac81c759143b5c" ]; then echo "Commits are same"; else echo "Commit details dees not match, exiting."; exit 0; fi

@@ -1,0 +1,45 @@
+apiVersion: automation.cloudbees.io/v1alpha1
+kind: workflow
+name: RegisterDeployedArtifact
+on:
+  workflow_dispatch:
+jobs:
+  env_reg_artifacts:
+    steps:
+      - name: Inform system that an artifact version was created
+        uses: cloudbees-io/register-build-artifact@v2
+        id: register
+        with:
+          name: "cbpautomation/python-hello-world-docker"
+          version: "11.15.03"
+          url: "docker.io/cbpautomation/python-hello-world-docker:11.15.03"
+          digest: "sha256:a85c98de5c7f650f934499786ba4caa2ec9fbfa382a37bbdd2b81aa1d28f49af"
+          
+      - name: success_valid_env_reg_artifact
+        uses: cloudbees-io/register-deployed-artifact@v2
+        with:
+          labels: allPassed, deployed
+          target-environment: "PROD"
+          artifact-id: ${{ steps.register.outputs.artifact-id }}
+
+      - name: Get artifact details
+        id: getArtifactDetails
+        uses: cloudbees-io/get-artifact-details@v1
+        with:
+          artifact-id: ${{ steps.register.outputs.artifact-id }}
+
+      - name: Print artifact details
+        id: printArtifactDetails
+        uses: docker://golang:1.20.3-alpine3.17
+        shell: sh
+        run: |
+          echo "Output from getArtifactDetails: "
+          echo "name: ${{ steps.getArtifactDetails.outputs.name }}"
+          echo "version: ${{ steps.getArtifactDetails.outputs.version }}"
+          echo "url: ${{ steps.getArtifactDetails.outputs.url }}"
+          echo "digest: ${{ steps.getArtifactDetails.outputs.digest }}"
+          [ "${{ steps.getArtifactDetails.outputs.name }}" = "cbpautomation/python-hello-world-docker" ] && echo "Both names are same "  || echo "Both names are not same" && exit 1
+          [ "${{ steps.getArtifactDetails.outputs.version }}" = "11.15.03" ] && echo "Both versions are same "  || echo "Both versions are not same" && exit 1
+          [ "${{ steps.getArtifactDetails.outputs.url }}" = "docker.io/cbpautomation/python-hello-world-docker:11.15.03" ] && echo "Both urls are same "  || echo "Both urls are not same" && exit 1
+          [ "${{ steps.getArtifactDetails.outputs.digest }}" = "sha256:a85c98de5c7f650f934499786ba4caa2ec9fbfa382a37bbdd2b81aa1d28f49af" ] && echo "Both digest are same "  || echo "Both digests are not same" && exit 1
+

@@ -1,17 +1,28 @@
 apiVersion: automation.cloudbees.io/v1alpha1
+
 kind: workflow
 name: My workflow
-
 on:
-  push:
-    branches:
-      - '**'
-
+  workflow_dispatch:
 jobs:
   build:
     steps:
-      - name: Say hello
+      - name: Checkout Repository
+        uses: cloudbees-io/checkout@v1
+      - run: |
+          git log -n 1 --format="%H"
+          echo "$(git log -n 1 --format="%H")" > "$CLOUDBEES_OUTPUTS/id"
+        uses: docker://alpine/git:latest
+        id: sha
+      - name: Publish workflow evidence item
+        uses: cloudbees-io/publish-evidence-item@v1
+        if: ${{always()}}
+        with:
+          content: |
+            ${{steps.sha.outputs.id}}
+      - name: Echo Date
         uses: docker://golang:1.20.3-alpine3.17
         shell: sh
         run: |
-          echo "hello world"
+           echo "Date: 2025-10-09T14:41:01.833Z"
+

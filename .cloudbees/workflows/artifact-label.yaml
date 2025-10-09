@@ -1,17 +1,27 @@
 apiVersion: automation.cloudbees.io/v1alpha1
 kind: workflow
-name: My workflow
-
+name: RegisterDeployedArtifact
 on:
-  push:
-    branches:
-      - '**'
-
+  workflow_dispatch:
 jobs:
-  build:
+  env_reg_artifacts:
     steps:
-      - name: Say hello
-        uses: docker://golang:1.20.3-alpine3.17
-        shell: sh
-        run: |
-          echo "hello world"
+      - name: Inform system that an artifact version was created
+        uses: cloudbees-io/register-build-artifact@v1
+        id: register
+        with:
+          name: "cbpautomation/python-hello-world-docker"
+          version: "09.14.33"
+          url: "docker.io/cbpautomation/python-hello-world-docker:09.14.33"
+          digest: "sha256:ba621304afe810080c6773436d5f8b7c0fad8b9ea512a13f71f7dc3fa24a9a54"
+          
+      - name: success_valid_env_reg_artifact
+        uses: cloudbees-io/register-deployed-artifact@v2
+        with:
+          target-environment: PROD
+          artifact-id: ${{ steps.register.outputs.artifact-id }}
+      - name: add_labels_to_artifact_version
+        uses: cloudbees-io/label-artifact-version@v1
+        with:
+          artifact-id: ${{ steps.register.outputs.artifact-id }}
+          labels: ready-to-deploy, ready-to-test

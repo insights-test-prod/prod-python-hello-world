@@ -1,12 +1,8 @@
 apiVersion: automation.cloudbees.io/v1alpha1
 kind: workflow
 name: My workflow
-
 on:
-  push:
-    branches:
-      - '**'
-
+  workflow_dispatch:
 jobs:
   build:
     steps:
@@ -15,3 +11,34 @@ jobs:
         shell: sh
         run: |
           echo "hello world"
+      - name: Publish workflow evidence item
+        uses: cloudbees-io/publish-evidence-item@v1
+        with:
+          content: |-
+              ## Test markup and property rendering - H2 Level
+                - Run ID: ${{ cloudbees.run_id }}
+                - Date: 2025-10-10T05:16:31.963Z
+                - [backend.tar](https://ourcompany.com/repo/backend.tar)
+              Character code - '&#124;'
+              ```
+                  jobs:
+                    build:
+                      steps:
+                      - Compile
+              ```
+              - **Be bold**
+              - _Rome is in Italy_
+              - ~~Hunger strike~~
+              # H1 Header
+              | Test   | Results |
+              |--------|---------|
+              | Test 1 | PASS    |
+              | Test 2 | FAIL    |
+              | Test 3 | PASS    |
+
+              > All builds are green
+
+              ![Success](https://media1.tenor.com/m/-8Uay6X3E3UAAAAd/gil-cat.gif)
+          format: MARKDOWN
+                      
+                      

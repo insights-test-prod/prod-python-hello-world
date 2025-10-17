@@ -5,7 +5,7 @@ name: My workflow
 on:
   workflow_call:
     inputs:
-      manifest:
+      artifact-id:
         type: string
         required: true
       environment:
@@ -14,10 +14,21 @@ on:
 
 jobs:
   deploy-app1:
+    timeout-minutes: 5
     steps:
-      - name: Deploy cbpautomation/python-hello-world-docker
-        if: ${{ fromJSON(inputs.manifest)['cbpautomation/python-hello-world-docker'].deploy }}
+      - name: Get artifact details
+        id: get-artifact-details
+        uses: cloudbees-io/get-artifact-details@v1
+        with: 
+          artifact-id: ${{ inputs.artifact-id }}
+      - name: Deploy artifact
+        uses: docker://golang:1.20.3-alpine3.17
+        shell: sh
+        run: |
+          echo "Deploying ${{ steps.get-artifact-details.outputs.name }}:${{ steps.get-artifact-details.outputs.version }} from ${{ steps.get-artifact-details.outputs.url }} to ${{ job.environment }}" 
+      - name: Register deployment
         uses: cloudbees-io/register-deployed-artifact@v2
         with:
-          artifact-id: "${{ fromJSON(inputs.manifest)['cbpautomation/python-hello-world-docker'].id }}"
-          target-environment: "${{ inputs.environment }}"
+          artifact-id: ${{ inputs.artifact-id }}
+          target-environment: ${{ inputs.environment }}
+          labels: PROD
